@@ -72,7 +72,7 @@ const Card = ({ id, name, image, types }) => {
                             variants={imageAnimation}
                             initial='initial'
                             animate='animate'
-                            transition={{ delay: .5, duration: 1 }}
+                            whileHover={{ y: -10 }}
 
                             src={image}
                             alt={name}

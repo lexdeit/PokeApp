@@ -1,33 +1,31 @@
 .card {
     display: flex;
-    padding: 15px 10px 15px 15px;
-    border-radius: 20px;
+    padding: 1em .7em 1em 1em;
+    border-radius: 1em;
     position: relative;
     min-height: 100px;
-    border: 1px solid #fff;
-    background-color: black;
-  }
+}
 
-  .nombreTipos {
+.nombreTipos {
     display: flex;
     flex-direction: column;
-  }
+}
 
-  .nombreTipos h3 {
+.nombreTipos h3 {
     margin: 0;
     color: #fff;
-    text-transform: capitalize;
-  }
+    text-transform: uppercase;
+}
 
-  .card .imagen {
+.card .imagen {
     position: absolute;
     right: -15px;
     top: 10px;
-  }
+}
 
-  .card .tipo {
+.card .tipo {
     color: #fff;
-    background-color: rgba(255, 255, 230, 0.3);
+    background-color: rgba(255, 255, 230, 0.2);
     margin-bottom: 4px;
     border-radius: 20px;
     text-align: center;
@@ -35,10 +33,10 @@
     text-transform: capitalize;
     font-size: 14px;
     place-self: flex-start;
-  }
+}
 
-  .card .tipos {
+.card .tipos {
     display: flex;
     flex-shrink: wrap;
     flex-direction: column;
-  }
+}

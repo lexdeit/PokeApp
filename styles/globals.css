@@ -36,3 +36,60 @@ a {
     color-scheme: dark;
   }
 }
+
+
+.water {
+  background: #43ccff;
+}
+
+.bug {
+  background: #aedf70;
+}
+
+.grass {
+  background: #00ca91;
+}
+
+.fire {
+  background: #a95c4d;
+}
+
+.normal {
+  background: #a5a5a5;
+}
+
+.dark{
+  background: rgb(30, 0, 59);
+}
+
+.psychic{
+  background: pink;
+}
+
+.steel {
+  background: gray;
+}
+
+.electric{
+  background: #005290;
+}
+
+.ghost{
+  background: rgb(138, 0, 145);
+}
+
+.dragon{
+  background: brown;
+}
+
+.ice{
+  background: #81ddff;
+}
+
+.ground{
+  background: brown;
+}
+
+.fighting{
+  background: #9bc0cd;
+}

@@ -1,5 +1,4 @@
-import { delay, motion } from 'framer-motion';
-import Image from 'next/image';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import styles from './Card.module.css';
 
@@ -26,7 +25,7 @@ const cardAnimation = {
         opacity: 1
     }
 
-}
+};
 
 const imageAnimation = {
 
@@ -39,7 +38,7 @@ const imageAnimation = {
         opacity: 1,
         y: 0
     },
-}
+};
 
 const Card = ({ id, name, image, types }) => {
     return (
@@ -56,7 +55,7 @@ const Card = ({ id, name, image, types }) => {
                         whileHover={{ scale: 1.1 }}
                         whileInView='whileInView'
 
-                        className={styles.card}>
+                        className={`${styles.card} ${types[0].type.name}`}>
                         <div className={styles.nombreTipos}>
                             <h3>{name}</h3>
                             <div className={styles.tipos}>

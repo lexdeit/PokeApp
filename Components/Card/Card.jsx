@@ -1,7 +1,45 @@
-import styles from './Card.module.css';
+import { delay, motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import styles from './Card.module.css';
 
+const cardAnimation = {
+
+    initial: {
+        opacity: 0,
+        x: -400
+    },
+
+    animate: {
+        x: 0
+    },
+
+    transition: {
+        duration: 1
+    },
+
+    whileHover: {
+        scale: 1.1
+    },
+
+    whileInView: {
+        opacity: 1
+    }
+
+}
+
+const imageAnimation = {
+
+    initial: {
+        opacity: 0,
+        y: -50
+    },
+
+    animate: {
+        opacity: 1,
+        y: 0
+    },
+}
 
 const Card = ({ id, name, image, types }) => {
     return (
@@ -9,7 +47,16 @@ const Card = ({ id, name, image, types }) => {
             <li key={id}>
                 <Link href="">
 
-                    <div className={styles.card}>
+                    <motion.div
+
+                        variants={cardAnimation}
+                        initial='initial'
+                        animate='animate'
+                        transition='transition'
+                        whileHover={{ scale: 1.1 }}
+                        whileInView='whileInView'
+
+                        className={styles.card}>
                         <div className={styles.nombreTipos}>
                             <h3>{name}</h3>
                             <div className={styles.tipos}>
@@ -20,8 +67,23 @@ const Card = ({ id, name, image, types }) => {
                                 })}
                             </div>
                         </div>
-                        <Image src={image} alt={name} className={styles.image} width={150} height={150} priority />
-                    </div>
+
+                        <motion.img
+
+                            variants={imageAnimation}
+                            initial='initial'
+                            animate='animate'
+                            transition={{ delay: .5, duration: 1 }}
+
+                            src={image}
+                            alt={name}
+                            className={styles.image}
+                            width={150}
+                            height={150}
+                        />
+
+
+                    </motion.div>
                 </Link>
             </li>
         </>

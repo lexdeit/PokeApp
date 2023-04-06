@@ -6,24 +6,24 @@ const roboto = Roboto({ subsets: ['latin'], weight: ['100', '300', '400', '500',
 
 export default function App({ Pokemones }) {
 
+console.log(Pokemones);
 
   axios.get(`https://pokeapi.co/api/v2/pokemon/`)
-    .then(response => response.data)
-    .then(data => data.results)
-    .then(results => {
-      const characters = results.map(character => {
-        return fetch(character.url)
-          .then(res => res.json())
-      });
-      return Promise.all(characters)
+    .then(response => {
+      const promises = response.data.results.map(character => axios.get(character.url));
+      return Promise.all(promises);
     })
-    .then(characters => {
-      return characters.map(pokemon => {
-        return ({ id: pokemon.id, name: pokemon.name, sprites: pokemon.sprites.other.dream_world.front_default, types: pokemon.types })
-      })
+    .then(responses => Promise.all(responses.map(res => res.data)))
+    .then(pokemonData => {
+      const formattedPokemonData = pokemonData.map(pokemon => ({
+        id: pokemon.id,
+        name: pokemon.name,
+        sprites: pokemon.sprites.other.dream_world.front_default,
+        types: pokemon.types
+      }));
+      console.log(formattedPokemonData);
     })
-    .then(pokemon => console.log(pokemon))
-    .catch(error => console.error(error.message))
+    .catch(error => console.error(error.message));
 
 
   return (
@@ -40,66 +40,66 @@ export default function App({ Pokemones }) {
 
 
 
-export async function getServerSideProps() {
-
-
-  const getPokemons = async (numero) => {
-    return fetch(`https://pokeapi.co/api/v2/pokemon/${numero}/`)
-      .then(response => response.json())
-      .then(data => data)
-  }
-
-  let Pokemones = [];
-
-  for (let i = 1; i <= 20; i++) {
-
-    let Pokemon = await getPokemons(i)
-    Pokemones.push(Pokemon)
-  }
-
-  Pokemones = Pokemones.map(({ id, name, sprites, types }) => {
-    return ({
-      id,
-      name,
-      image: sprites.other.dream_world.front_default,
-      types,
-      hola: 'hola'
-    })
-  })
-
-  return {
-    props: {
-      Pokemones
-    }
-  }
-}
-
-
-
-
-
-
 // export async function getServerSideProps() {
 
 
-//   let Pokemones = await axios.get(`https://pokeapi.co/api/v2/pokemon/`)
-//     .then(response => response.data)
-//     .then(data => data.results)
-//     .then(results => {
-//       const characters = results.map(character => {
-//         return fetch(character.url)
-//           .then(res => res.json())
-//       });
-//       return Promise.all(characters)
+//   const getPokemons = async (numero) => {
+//     return fetch(`https://pokeapi.co/api/v2/pokemon/${numero}/`)
+//       .then(response => response.json())
+//       .then(data => data)
+//   }
+
+//   let Pokemones = [];
+
+//   for (let i = 1; i <= 20; i++) {
+
+//     let Pokemon = await getPokemons(i)
+//     Pokemones.push(Pokemon)
+//   }
+
+//   Pokemones = Pokemones.map(({ id, name, sprites, types }) => {
+//     return ({
+//       id,
+//       name,
+//       image: sprites.other.dream_world.front_default,
+//       types,
+//       hola: 'hola'
 //     })
-//     .then(characters => {
-//       return characters.map(pokemon => {
-//         return ({ id: pokemon.id, name: pokemon.name, sprites: pokemon.sprites.other.dream_world.front_default, types: pokemon.types })
-//       })
-//     })
-//     .catch(error => console.error(error.message));
+//   })
+
+//   return {
+//     props: {
+//       Pokemones
+//     }
+//   }
+// }
 
 
 
-//   return { props: { Pokemones } };
-// };
+
+
+
+export async function getServerSideProps() {
+
+
+  axios.get(`https://pokeapi.co/api/v2/pokemon/`)
+    .then(response => {
+      const promises = response.data.results.map(character => axios.get(character.url));
+      return Promise.all(promises);
+    })
+    .then(responses => Promise.all(responses.map(res => res.data)))
+    .then(pokemonData => {
+      const Pokemones = pokemonData.map(pokemon => ({
+        id: pokemon.id,
+        name: pokemon.name,
+        sprites: pokemon.sprites.other.dream_world.front_default,
+        types: pokemon.types
+      }));
+      return { props: { Pokemones } };
+
+    })
+    .catch(error => console.error(error.message));
+  return { props: { Pokemones: [] } }
+
+
+};

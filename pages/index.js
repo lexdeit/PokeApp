@@ -7,32 +7,24 @@ const roboto = Roboto({ subsets: ['latin'], weight: ['100', '300', '400', '500',
 
 export default function App({ urls }) {
   const [Pokemones, setPokemones] = useState([]);
-  console.log(urls);
+
   useEffect(() => {
-    axios.get(`https://pokeapi.co/api/v2/pokemon/`)
-      .then(res => res.data)
-      .then(results => {
-        const URLS = results.results.map(resultado => resultado.url);
-        return URLS;
+    Promise.all(urls.map(url => axios.get(url)))
+      .then(responses => {
+        const pokemones = responses.map(res => {
+          const { id, name, sprites, types } = res.data;
+          return {
+            id,
+            name,
+            image: sprites.other.dream_world.front_default,
+            types
+          };
+        });
+        setPokemones(pokemones);
       })
-      .then(urls => {
-        const promises = urls.map(url => axios.get(url));
-        return Promise.all(promises)
-          .then((responses) => {
-            let resul = [];
-            responses.forEach(res => { resul.push(res.data) })
-            return resul;
-          })
-      })
-      .then(response => {
-        const Pokemones = response.map(pokemon => ({
-          id: pokemon.id,
-          name: pokemon.name,
-          image: pokemon.sprites.other.dream_world.front_default,
-          types: pokemon.types
-        }))
-        setPokemones(Pokemones);
-      })
+      .catch(error => {
+        // Manejar errores aquí
+      });
   }, []);
 
 
@@ -46,15 +38,9 @@ export default function App({ urls }) {
 };
 
 export async function getServerSideProps(context) {
-
   try {
-    let response = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
-    let data = await response.data;
-
-    let urls = data.results.map(resultado => resultado.url);
-    let promises = urls.map(url => axios.get(url))
-
-    
+    const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
+    const urls = data.results.map(resultado => resultado.url);
 
     return {
       props: { urls }
@@ -63,10 +49,7 @@ export async function getServerSideProps(context) {
   } catch (error) {
     console.log(error);
     return {
-      props: { urls }
+      props: { urls: [] }
     }
   }
-
-
-
 }

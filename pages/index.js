@@ -5,9 +5,9 @@ import { useEffect, useState } from 'react';
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['100', '300', '400', '500', '700', '900'] })
 
-export default function App() {
+export default function App({ urls }) {
   const [Pokemones, setPokemones] = useState([]);
-
+  console.log(urls);
   useEffect(() => {
     axios.get(`https://pokeapi.co/api/v2/pokemon/`)
       .then(res => res.data)
@@ -33,7 +33,7 @@ export default function App() {
         }))
         setPokemones(Pokemones);
       })
-  }, []); 
+  }, []);
 
 
   return (
@@ -44,3 +44,29 @@ export default function App() {
     </>
   )
 };
+
+export async function getServerSideProps(context) {
+
+  try {
+    let response = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
+    let data = await response.data;
+
+    let urls = data.results.map(resultado => resultado.url);
+    let promises = urls.map(url => axios.get(url))
+
+    
+
+    return {
+      props: { urls }
+    }
+
+  } catch (error) {
+    console.log(error);
+    return {
+      props: { urls }
+    }
+  }
+
+
+
+}

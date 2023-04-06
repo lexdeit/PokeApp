@@ -12,36 +12,7 @@ export default function App({ Pokemones }) {
   return (
     <>
       <main className={roboto.className}>
-        <section className={styles.container}>
-
-          <ul className={styles.columnasul}>
-            {Pokemones.map(pokemon => {
-              return (
-                <li key={pokemon.id}>
-                  <Link href="">
-
-                    <div className={styles.card}>
-                      <div className={styles.nombreTipos}>
-                        <h3>{pokemon.name}</h3>
-                        <div className={styles.tipos}>
-                          {pokemon.types.map((tipo, index) => {
-                            return (
-                              <p className={styles.tipo}>{tipo.type.name}</p>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                    <img src={pokemon.image} alt={pokemon.name} width='150' height='150' className={styles.image} />
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-
-          <Home Pokemones={Pokemones} />
-
-        </section>
+        <Home Pokemones={Pokemones} />
       </main>
     </>
   )
@@ -60,7 +31,7 @@ export async function getServerSideProps() {
 
   let Pokemones = [];
 
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 50; i++) {
 
     let Pokemon = await getPokemons(i)
     Pokemones.push(Pokemon)

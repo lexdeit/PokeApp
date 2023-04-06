@@ -2,6 +2,7 @@ import styles from './Card.module.css';
 import Image from 'next/image';
 import Link from 'next/link';
 
+
 const Card = ({ id, name, image, types }) => {
     return (
         <>
@@ -19,8 +20,8 @@ const Card = ({ id, name, image, types }) => {
                                 })}
                             </div>
                         </div>
+                        <Image src={image} alt={name} className={styles.image} width={150} height={150} priority />
                     </div>
-                    <Image src={image} alt={name} className={styles.image} width={150} height={150} priority />
                 </Link>
             </li>
         </>

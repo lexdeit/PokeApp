@@ -1,30 +1,30 @@
 import axios from 'axios';
 
-export async function pruebapke() {
-    try {
-        const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
-        const urls = data.results.map(resultado => resultado.url);
+export async function getServerSideProps(context) {
 
-        // Hacemos todas las solicitudes de manera concurrente usando Promise.all
-        const responses = await Promise.all(urls.map(url => axios.get(url)));
+    const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
+    const results = data.results.map(resultado => resultado);
 
-        const pokemones = responses.map(res => {
-            const { id, name, sprites, types } = res.data;
-            return {
-                id,
-                name,
-                image: sprites.other.dream_world.front_default,
-                types
-            };
-        });
+    const urls = results.map(elemento => elemento.url)
+    const promises = urls.map(url => axios.get(url))
 
-        return {
-            props: { pokemones }
-        };
-    } catch (error) {
-        // Manejar errores aquí y devolver un objeto con el error
-        return {
-            props: { error: 'Error en la solicitud' }
-        };
-    }
+    return Promise.allSettled(promises)
+        .then((responses) => { const value = responses.map(res => res.value.data); return value })
+        .then(resonse => {
+            const pokemones = resonse.map(res => {
+                const { id, name, sprites, types } = res;
+                return {
+                    id,
+                    name,
+                    image: sprites.other.dream_world.front_default,
+                    types
+                };
+            });
+            // console.log(pokemones);
+            return { props: { pokemones } }
+        })
+        .catch(error => {
+            console.log(`Error conexion servidor: ${error.message}`);
+            return { props: { pokemones: [] } }
+        })
 }

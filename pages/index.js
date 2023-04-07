@@ -5,27 +5,35 @@ import { useEffect, useState } from 'react';
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['100', '300', '400', '500', '700', '900'] })
 
-export default function App({ urls }) {
-  const [Pokemones, setPokemones] = useState([]);
+export default function App() {
 
+
+  const [Pokemones, setPokemones] = useState([]);
   useEffect(() => {
-    Promise.all(urls.map(url => axios.get(url)))
-      .then(responses => {
-        const pokemones = responses.map(res => {
-          const { id, name, sprites, types } = res.data;
-          return {
-            id,
-            name,
-            image: sprites.other.dream_world.front_default,
-            types
-          };
-        });
-        setPokemones(pokemones);
+    axios.get(`https://pokeapi.co/api/v2/pokemon/`)
+      .then(res => res.data)
+      .then(data => {
+        const urls = data.results.map(result => result.url);
+        return urls;
       })
-      .catch(error => {
-        // Manejar errores aquí
-      });
-  }, []);
+      .then(urls => { const promises = urls.map(url => axios.get(url)); return promises })
+      .then(promises => { return Promise.allSettled(promises) })
+      .then(respones => {
+        let pokemones = [];
+        respones.forEach(response => {
+          if (response.status === 'fulfilled') {
+            pokemones.push(response.value.data)
+          }
+        })
+        return pokemones;
+      })
+      .then(pokemones => {
+        const organizado = pokemones.map(pokemon => {
+          return { id: pokemon.id, name: pokemon.name, image: pokemon.sprites.other.dream_world.front_default, types: pokemon.types }
+        })
+        setPokemones(organizado)
+      })
+  }, [])
 
 
   return (
@@ -37,19 +45,37 @@ export default function App({ urls }) {
   )
 };
 
-export async function getServerSideProps(context) {
-  try {
-    const { data } = await axios.get(`https://pokeapi.co/api/v2/pokemon/`);
-    const urls = data.results.map(resultado => resultado.url);
 
-    return {
-      props: { urls }
-    }
 
-  } catch (error) {
-    console.log(error);
-    return {
-      props: { urls: [] }
-    }
-  }
-}
+// export async function getServerSideProps(context) {
+
+//   return axios.get(`https://pokeapi.co/api/v2/pokemon/`)
+//     .then(res => res.data)
+//     .then(data => {
+//       const urls = data.results.map(result => result.url);
+//       return urls;
+//     })
+//     .then(urls => { const promises = urls.map(url => axios.get(url)); return promises })
+//     .then(promises => { return Promise.allSettled(promises) })
+//     .then(respones => {
+//       let pokemones = [];
+//       respones.forEach(response => {
+//         if (response.status === 'fulfilled') {
+//           pokemones.push(response.value.data)
+//         }
+//       })
+//       return pokemones;
+//     })
+//     .then(pokemones => {
+//       const organizado = pokemones.map(pokemon => {
+//         return { id: pokemon.id, name: pokemon.name, sprites: pokemon.sprites, types: pokemon.types }
+//       })
+//       console.log(organizado);
+//       return organizado;
+//     })
+//     .then(organizado => {
+//       return {
+//         props: { organizado },
+//       }
+//     })
+// }

@@ -93,3 +93,19 @@ a {
 .fighting{
   background: #9bc0cd;
 }
+
+.poison{
+  background: purple;
+}
+
+.rock{
+  background: gray;
+}
+
+.fairy {
+  background: pink;
+}
+
+.flying {
+  background: lightgray;
+}

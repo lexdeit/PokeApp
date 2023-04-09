@@ -1,27 +1,20 @@
 import { Roboto } from 'next/font/google';
 import Home from './home';
-import axios from 'axios';
+import getPokemon from './api/getPokemons';
 import { useEffect, useState } from 'react';
 
 const roboto = Roboto({ subsets: ['latin'], weight: ['100', '300', '400', '500', '700', '900'] })
 
 export default function App() {
   const [Pokemones, setPokemones] = useState([]);
+  const [pages, setPages] = useState({ next: ``, previous: `` });
+
 
 
   useEffect(() => {
-    axios.get(`https://pokeapi.co/api/v2/pokemon/`)
-      .then(res => res.data.results.map(result => result.url))
-      .then(urls => Promise.all(urls.map(url => axios.get(url))))
-      .then(responses => {
-        const organizado = responses.reduce((acc, response) => {
-          const { id, name, sprites, types } = response.data;
-          return [...acc, { id, name, image: sprites.other.dream_world.front_default, types }];
-        }, []);
-        setPokemones(organizado);
-      });
+    getPokemon('https://pokeapi.co/api/v2/pokemon/', setPokemones, setPages)
   }, []);
-  
+
 
 
 
@@ -30,6 +23,9 @@ export default function App() {
     <>
       <main className={roboto.className}>
         {Pokemones.length !== 0 && <Home Pokemones={Pokemones} />}
+
+        <button onClick={() => { getPokemon(pages.previous) }}>Volver a la pagina anterior</button>
+        <button onClick={() => { getPokemon(pages.next) }}>Cargar siguientes Pokemones</button>
       </main>
     </>
   )

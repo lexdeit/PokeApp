@@ -2,43 +2,24 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import styles from './Card.module.css';
 
-const cardAnimation = {
 
-    initial: {
-        opacity: 0,
-        x: -400
+const containerAnimation = {
+    hidden: { opacity: 1, scale: 0 },
+    visible: {
+        opacity: 1, scale: 1, transition: {
+            delayChildren: 0.1,
+            staggerChildren: 0.5
+        }
     },
-
-    animate: {
-        x: 0
-    },
-
-    transition: {
-        duration: 1
-    },
-
-    whileHover: {
-        scale: 1.1
-    },
-
-    whileInView: {
-        opacity: 1
-    }
-
+    hover: { scale: 1.2, zIndex: 10 }
 };
 
-const imageAnimation = {
-
-    initial: {
-        opacity: 0,
-        y: -50
-    },
-
-    animate: {
-        opacity: 1,
-        y: 0
-    },
+const iconPokemonVariants = {
+    hidden: { y: 20, opacity: 0, rotateZ: 100 },
+    visible: { y: 0, opacity: 1, rotateZ: 0 },
 };
+
+
 
 const Card = ({ id, name, image, types }) => {
     return (
@@ -47,33 +28,33 @@ const Card = ({ id, name, image, types }) => {
                 <Link href="">
 
                     <motion.div
-
-                        variants={cardAnimation}
-                        initial='initial'
-                        animate='animate'
-                        transition='transition'
-                        whileHover={{ scale: 1.1 }}
-                        whileInView='whileInView'
-
+                        variants={containerAnimation}
+                        initial="hidden"
+                        whileInView="visible"
+                        whileHover='hover'
                         className={`${styles.card} ${types[0].type.name}`}>
-                        <div className={styles.nombreTipos}>
-                            <h3>{name}</h3>
-                            <div className={styles.tipos}>
+
+                        <motion.div
+                            variants={iconPokemonVariants}
+                            className={styles.nombreTipos}>
+                            <motion.h3
+                                variants={iconPokemonVariants}
+                            >{name}</motion.h3>
+                            <motion.div
+                                variants={iconPokemonVariants}
+                                className={styles.tipos}>
                                 {types.map(tipo => {
                                     return (
-                                        <p className={styles.tipo}>{tipo.type.name}</p>
+                                        <motion.p
+                                            variants={iconPokemonVariants}
+                                            className={styles.tipo}>{tipo.type.name}</motion.p>
                                     )
                                 })}
-                            </div>
-                        </div>
+                            </motion.div>
+                        </motion.div>
 
                         <motion.img
-
-                            variants={imageAnimation}
-                            initial='initial'
-                            animate='animate'
-                            whileHover={{ y: -10 }}
-
+                            variants={iconPokemonVariants}
                             src={image}
                             alt={name}
                             className={styles.image}
